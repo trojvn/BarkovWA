@@ -44,7 +44,6 @@ def _get(driver: uc.Chrome) -> bool:
     driver.implicitly_wait(100)
     xpath = "//*[@value='Скачать результат' or text()=' Скачать результат']"
     element = driver.find_element(By.XPATH, xpath)
-    print("finded1")
     driver.implicitly_wait(5)
     is_clicked = False
     for _ in range(10):
@@ -52,7 +51,7 @@ def _get(driver: uc.Chrome) -> bool:
         xpath = "//*[@value='Скачать результат' or text()=' Скачать результат']"
         try:
             element = driver.find_element(By.XPATH, xpath)
-            print("finded2")
+            print("finded download results")
             element.click()
             is_clicked = True
             break
