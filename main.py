@@ -62,56 +62,45 @@ def _get(driver: uc.Chrome) -> bool:
 
 
 def _main():
-    if not (kw := get_keyword()):
-        print("No keywords!")
-        return False
-    print(f"new keyword {kw}")
-    options = Options()
-    user_dir = rf"C:\Users\{USER}\AppData\Local\Google\Chrome\User Data"
-    driver = uc.Chrome(
-        options,
-        user_data_dir=user_dir,
-        use_subprocess=True,
-        headless=bool(HIDE),
-    )
-    try:
-        driver.implicitly_wait(30)
-        driver.get(URL)
-        sleep(3)
-        xpath = "//input[@placeholder='например, SMM']"
-        element = driver.find_element(By.XPATH, xpath)
-        element.click()
-        element.send_keys(kw)
-        sleep(3)
-        if DATE:
-            xpath = "//input[@id='startDate']"
+    for kw in get_lines(KW_FILE):
+        print(f"new keyword {kw}")
+        options = Options()
+        user_dir = rf"C:\Users\{USER}\AppData\Local\Google\Chrome\User Data"
+        driver = uc.Chrome(
+            options,
+            user_data_dir=user_dir,
+            use_subprocess=True,
+            headless=bool(HIDE),
+        )
+        try:
+            driver.implicitly_wait(30)
+            driver.get(URL)
+            sleep(3)
+            xpath = "//input[@placeholder='например, SMM']"
             element = driver.find_element(By.XPATH, xpath)
-            element.send_keys(DATE)
-        sleep(3)
-        xpath = "//*[contains(text(),'Только ссылки на чаты вида')]"
-        element = driver.find_element(By.XPATH, xpath)
-        element.click()
-        sleep(3)
-        xpath = "//input[@id='submitWhatsappSearch']"
-        element = driver.find_element(By.XPATH, xpath)
-        element.click()
-        if _get(driver):
-            _bl = get_lines(BL_FILE)
-            _bl.append(f"\n{kw}")
-            set_lines(BL_FILE, _bl)
-    except Exception as e:
-        logging.exception(e)
-    driver.close()
-    return True
+            element.click()
+            element.send_keys(kw)
+            sleep(3)
+            if DATE:
+                xpath = "//input[@id='startDate']"
+                element = driver.find_element(By.XPATH, xpath)
+                element.send_keys(DATE)
+            sleep(3)
+            xpath = "//*[contains(text(),'Только ссылки на чаты вида')]"
+            element = driver.find_element(By.XPATH, xpath)
+            element.click()
+            sleep(3)
+            xpath = "//input[@id='submitWhatsappSearch']"
+            element = driver.find_element(By.XPATH, xpath)
+            element.click()
+            _get(driver)
+        except Exception as e:
+            logging.exception(e)
+        driver.close()
 
 
 def main():
-    while True:
-        try:
-            if not _main():
-                break
-        except Exception:
-            pass
+    _main()
     input("Enter for exit...")
 
 
