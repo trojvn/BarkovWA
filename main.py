@@ -6,7 +6,7 @@ import undetected_chromedriver as uc
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
-from envs import SLEEP_END, USER
+from envs import HIDE, SLEEP_END, USER
 
 URL = "https://vk.barkov.net/whatsappsearch.aspx"
 
@@ -69,7 +69,12 @@ def _main():
     print(f"new keyword {kw}")
     options = Options()
     user_dir = rf"C:\Users\{USER}\AppData\Local\Google\Chrome\User Data"
-    driver = uc.Chrome(options, user_data_dir=user_dir, use_subprocess=True)
+    driver = uc.Chrome(
+        options,
+        user_data_dir=user_dir,
+        use_subprocess=True,
+        headless=bool(HIDE),
+    )
     try:
         driver.implicitly_wait(30)
         driver.get(URL)
