@@ -1,0 +1,50 @@
+name: Build Pyinstaller Executable and Upload
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-exe:
+    runs-on: "windows-latest"
+
+    env:
+      MAIN_PY_FILE: "main.py"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.13.x
+
+      - name: Install Python dependencies
+        run: |
+          pip install poetry
+          poetry config virtualenvs.create false
+          poetry install --no-root
+          pip install pyinstaller
+        working-directory: ./
+
+      - name: Build executable
+        run: |
+          pyinstaller ${{ env.MAIN_PY_FILE }} -F -i icon.ico
+        working-directory: ./
+
+      - name: Rename Executable, Copy Kitty and Create Archive
+        run: |
+          mv dist/main.exe dist/${{ secrets.PROJECT_NAME }}.exe
+        working-directory: ./
+
+      - name: Upload to FastFile Single
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: "https://fastfile.yuharan.ru/"
+          method: "POST"
+          username: fastfile
+          password: ${{ secrets.FF_PSWD }}
+          files: '{"file": "dist/${{ secrets.PROJECT_NAME }}.exe"}'
+          timeout: 120000
