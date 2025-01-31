@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "erikbarkov"
+version = "0.1.0"
+description = ""
+authors = ["trojvn <mrx.trojan@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+undetected-chromedriver = "^3.5.5"
+setuptools = "^75.8.0"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
