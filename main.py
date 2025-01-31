@@ -6,7 +6,7 @@ import undetected_chromedriver as uc
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
-from envs import HIDE, SLEEP_END, USER
+from envs import DATE, HIDE, SLEEP_END, USER
 
 URL = "https://vk.barkov.net/whatsappsearch.aspx"
 
@@ -31,11 +31,10 @@ def get_keyword() -> str:
         BL_FILE.touch()
     if lines := get_lines(KW_FILE):
         _bl = get_lines(BL_FILE)
-        for l in lines:
-            if l in _bl:
+        for line in lines:
+            if line in _bl:
                 continue
-            kw = l
-            set_lines(BL_FILE, _bl)
+            kw = line
             return kw
     return ""
 
@@ -83,6 +82,12 @@ def _main():
         element = driver.find_element(By.XPATH, xpath)
         element.click()
         element.send_keys(kw)
+        sleep(3)
+        if DATE:
+            xpath = "//input[@id='startDate']"
+            element = driver.find_element(By.XPATH, xpath)
+            element.send_keys(DATE)
+        sleep(3)
         xpath = "//*[contains(text(),'Только ссылки на чаты вида')]"
         element = driver.find_element(By.XPATH, xpath)
         element.click()
