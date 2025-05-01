@@ -2,11 +2,10 @@ import logging
 from pathlib import Path
 from time import sleep
 
-import undetected_chromedriver as uc
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from seleniumbase import Driver
 
-from envs import DATE, HIDE, SLEEP_END, USER
+from envs import DATE, DEBUG, HIDE, SLEEP_END
 
 URL = "https://vk.barkov.net/whatsappsearch.aspx"
 
@@ -39,7 +38,7 @@ def get_keyword() -> str:
     return ""
 
 
-def _get(driver: uc.Chrome) -> bool:
+def _get(driver) -> bool:
     driver.implicitly_wait(100)
     xpath = "//*[@value='Скачать результат' or text()=' Скачать результат']"
     element = driver.find_element(By.XPATH, xpath)
@@ -64,17 +63,18 @@ def _get(driver: uc.Chrome) -> bool:
 def _main():
     for kw in get_lines(KW_FILE):
         print(f"new keyword {kw}")
-        options = Options()
-        user_dir = rf"C:\Users\{USER}\AppData\Local\Google\Chrome\User Data"
-        driver = uc.Chrome(
-            options,
-            user_data_dir=user_dir,
-            use_subprocess=True,
+        # user_dir = rf"C:\Users\{USER}\AppData\Local\Google\Chrome\User Data"
+        user_dir = "Profile1"
+
+        driver = Driver(
             headless=bool(HIDE),
+            user_data_dir=user_dir,
         )
         try:
             driver.implicitly_wait(30)
             driver.get(URL)
+            if DEBUG:
+                input("Enter for continue...")
             sleep(3)
             xpath = "//input[@placeholder='например, SMM']"
             element = driver.find_element(By.XPATH, xpath)

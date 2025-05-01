@@ -7,9 +7,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-undetected-chromedriver = "^3.5.5"
-setuptools = "^75.8.0"
 python-dotenv = "^1.0.1"
+seleniumbase = "^4.37.12"
 
 
 [build-system]
