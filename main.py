@@ -1,11 +1,13 @@
+import contextlib
 import logging
 from pathlib import Path
 from time import sleep
 
+from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.common.by import By
 from seleniumbase import Driver
 
-from envs import DATE, DEBUG, HIDE, SLEEP_END
+from envs import DATE, DATE_END, DEBUG, HIDE, SLEEP_END
 
 URL = "https://vk.barkov.net/whatsappsearch.aspx"
 
@@ -85,6 +87,17 @@ def _main():
                 xpath = "//input[@id='startDate']"
                 element = driver.find_element(By.XPATH, xpath)
                 element.send_keys(DATE)
+                sleep(1)
+                ac = ActionChains(driver)
+                ac.send_keys(Keys.ESCAPE).perform()
+            if DATE_END:
+                xpath = "//input[@id='finalDate']"
+                element = driver.find_element(By.XPATH, xpath)
+                element.send_keys(DATE_END)
+                sleep(1)
+                ac = ActionChains(driver)
+                ac.send_keys(Keys.ESCAPE).perform()
+
             sleep(3)
             xpath = "//*[contains(text(),'Только ссылки на чаты вида')]"
             element = driver.find_element(By.XPATH, xpath)
@@ -96,7 +109,8 @@ def _main():
             _get(driver)
         except Exception as e:
             logging.exception(e)
-        driver.close()
+        with contextlib.suppress(Exception):
+            driver.close()
 
 
 def main():
